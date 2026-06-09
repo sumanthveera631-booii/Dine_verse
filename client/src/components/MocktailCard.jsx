@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Heart, GlassWater, Star } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -12,16 +12,22 @@ export const MocktailCard = ({ item }) => {
     toggleWishlist(item._id);
   };
 
+  const defaultImage = 'https://via.placeholder.com/1200x800?text=Mocktail+Image';
+  const [imageSrc, setImageSrc] = useState(item.imageUrl || defaultImage);
+
   return (
     <div className="glass-card group glass-panel rounded-3xl overflow-hidden transition-all duration-500 hover:border-luxury-orange/50 hover:shadow-glass-amber relative flex flex-col h-full bg-luxury-black/40">
       
       {/* Product Image */}
       <div className="relative overflow-hidden aspect-[4/3] w-full bg-luxury-black">
         <img
-          src={item.imageUrl || 'https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&q=80&w=600'}
+          src={imageSrc}
           alt={item.title}
           className="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100"
           loading="lazy"
+          onError={(e) => {
+            if (e?.target && e.target.src !== defaultImage) setImageSrc(defaultImage);
+          }}
         />
         {/* Amber lighting overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-brown/20 to-transparent"></div>

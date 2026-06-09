@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Heart, Star } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -13,15 +13,21 @@ export const FoodCard = ({ item }) => {
     toggleWishlist(item._id);
   };
 
+  const defaultImage = 'https://via.placeholder.com/1200x800?text=Dish+Image';
+  const [imageSrc, setImageSrc] = useState(item.imageUrl || defaultImage);
+
   return (
     <div className="glass-card group glass-panel rounded-3xl overflow-hidden transition-all duration-500 hover:border-luxury-gold/50 hover:shadow-glass-amber relative flex flex-col h-full bg-luxury-black/40">
       {/* Product Image Container */}
       <div className="relative overflow-hidden aspect-[4/3] w-full">
         <img
-          src={item.imageUrl || 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=600'}
+          src={imageSrc}
           alt={item.title}
           className="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-110"
           loading="lazy"
+          onError={(e) => {
+            if (e?.target && e.target.src !== defaultImage) setImageSrc(defaultImage);
+          }}
         />
         {/* Soft shadow gradients overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/90 via-transparent to-transparent"></div>
