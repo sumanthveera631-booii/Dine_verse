@@ -1,26 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Users, ShieldCheck, Eye, Sparkles } from 'lucide-react';
 import GlassButton from './GlassButton';
 
 export const PrivateRoomCard = ({ room, onBook }) => {
-  const defaultImage = 'https://via.placeholder.com/1200x800?text=Venue+Image';
-  const [imageSrc, setImageSrc] = useState(room.imageUrl || defaultImage);
-
   return (
     <div className="glass-card group glass-panel rounded-3xl overflow-hidden transition-all duration-500 hover:border-luxury-gold hover:shadow-glass-gold flex flex-col h-full bg-luxury-black/30">
       
       {/* Venue Room Image */}
       <div className="relative overflow-hidden aspect-[16/10] w-full">
         <img
-          src={imageSrc}
+          src={room.imageUrl || 'https://images.unsplash.com/photo-1570129476589-94f50b8aaeb4?auto=format&fit=crop&q=80&w=600'}
           alt={room.title}
           className="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
           loading="lazy"
-          onError={(e) => {
-            if (e?.target && e.target.src !== defaultImage) {
-              setImageSrc(defaultImage);
-            }
-          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/90 via-transparent to-transparent"></div>
 
