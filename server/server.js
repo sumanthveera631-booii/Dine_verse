@@ -29,20 +29,28 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// Configure CORS
+// Configure CORS - allow localhost, the configured CLIENT_URL, and any request without origin (curl, server-to-server)
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://dineverse-phi.vercel.app',
 ];
+
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS not allowed'));
+    // Allow requests with no origin (server-to-server, curl) and any whitelisted origins
+    if (!origin) {
+      return callback(null, true);
     }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.warn(`CORS blocked request from origin: ${origin}`);
+    return callback(new Error('CORS not allowed by server'));
   },
   credentials: true,
 }));

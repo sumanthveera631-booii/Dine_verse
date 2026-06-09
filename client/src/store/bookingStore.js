@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import API_BASE_URL from '../config/apiConfig';
 
-const BASE_API_URL = process.env.REACT_APP_API_URL || 'https://dineverse-2kkb.onrender.com/api';
-const API_URL = `${BASE_API_URL}/bookings`;
-const PAYMENT_API_URL = `${BASE_API_URL}/payments`;
+const API_URL = `${API_BASE_URL}/bookings`;
+const PAYMENT_API_URL = `${API_BASE_URL}/payments`;
 
 export const useBookingStore = create((set, get) => ({
   reservations: [],

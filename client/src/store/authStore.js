@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import API_BASE_URL from '../config/apiConfig';
 
-// Use environment variable or fallback to production backend
-const API_URL = process.env.REACT_APP_API_URL || 'https://dineverse-2kkb.onrender.com/api';
+// Resolve API URL from shared config
+const API_URL = API_BASE_URL || 'https://dineverse-2kkb.onrender.com/api';
 
 export const useAuthStore = create((set, get) => ({
   user: JSON.parse(localStorage.getItem('dineverse_user')) || null,
