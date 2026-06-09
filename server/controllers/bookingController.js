@@ -90,7 +90,8 @@ exports.getMyVenueBookings = async (req, res) => {
 // @access  Private/Admin
 exports.getAllReservations = async (req, res) => {
   try {
-    const reservations = await Reservation.find({})
+    // Exclude cancelled reservations from admin listing
+    const reservations = await Reservation.find({ status: { $ne: 'Cancelled' } })
       .populate('user', 'name email')
       .sort({ createdAt: -1 });
     res.json(reservations);
@@ -104,7 +105,8 @@ exports.getAllReservations = async (req, res) => {
 // @access  Private/Admin
 exports.getAllVenueBookings = async (req, res) => {
   try {
-    const bookings = await PrivateBooking.find({})
+    // Exclude cancelled venue bookings from admin listing
+    const bookings = await PrivateBooking.find({ status: { $ne: 'Cancelled' } })
       .populate('user', 'name email')
       .sort({ createdAt: -1 });
     res.json(bookings);
