@@ -111,22 +111,18 @@ export const App = () => {
         <Route 
           path="/booking/success" 
           element={
-            <ProtectedRoute>
-              <StandardLayout>
-                <BookingSuccess />
-              </StandardLayout>
-            </ProtectedRoute>
+            <StandardLayout>
+              <BookingSuccess />
+            </StandardLayout>
           } 
         />
 
         <Route 
           path="/booking/cancel" 
           element={
-            <ProtectedRoute>
-              <StandardLayout>
-                <BookingCancel />
-              </StandardLayout>
-            </ProtectedRoute>
+            <StandardLayout>
+              <BookingCancel />
+            </StandardLayout>
           } 
         />
 

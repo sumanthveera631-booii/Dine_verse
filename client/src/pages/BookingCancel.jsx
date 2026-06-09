@@ -1,9 +1,29 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Home, RotateCcw } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { useBookingStore } from '../store/bookingStore';
 
 export const BookingCancel = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { cancelPaymentSession, loading } = useBookingStore();
+
+  const sessionId = searchParams.get('session_id');
+  const bookingType = searchParams.get('type') || 'standard_table';
+
+  React.useEffect(() => {
+    const doCancel = async () => {
+      if (sessionId) {
+        try {
+          await cancelPaymentSession(sessionId, bookingType);
+        } catch (err) {
+          console.warn('Failed to cancel booking on server:', err.message);
+        }
+      }
+    };
+    doCancel();
+  }, [sessionId, bookingType, cancelPaymentSession]);
 
   return (
     <div className="min-h-screen pt-32 pb-20 px-6 max-w-2xl mx-auto page-entrance">

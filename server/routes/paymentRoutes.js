@@ -4,6 +4,7 @@ const {
   createReservationCheckout, 
   createVenueCheckout,
   verifyPaymentSession,
+  cancelPaymentSession,
   getBookingFee
 } = require('../controllers/paymentController');
 const { protect } = require('../middleware/authMiddleware');
@@ -15,5 +16,6 @@ router.get('/fee/:tierType', getBookingFee);
 router.post('/checkout-session/reservation', protect, createReservationCheckout);
 router.post('/checkout-session/venue', protect, createVenueCheckout);
 router.post('/verify-session', protect, verifyPaymentSession);
+router.post('/cancel-session', protect, cancelPaymentSession);
 
 module.exports = router;

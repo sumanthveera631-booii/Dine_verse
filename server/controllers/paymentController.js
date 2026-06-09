@@ -63,7 +63,7 @@ exports.createReservationCheckout = async (req, res) => {
         }
       ],
       success_url: `${clientUrl}/booking/success?session_id={CHECKOUT_SESSION_ID}&type=standard_table`,
-      cancel_url: `${clientUrl}/booking/cancel`,
+      cancel_url: `${clientUrl}/booking/cancel?session_id={CHECKOUT_SESSION_ID}&type=standard_table`,
       metadata: {
         reservationId: reservation._id.toString(),
         userId: req.user._id.toString(),
@@ -124,7 +124,7 @@ exports.createVenueCheckout = async (req, res) => {
         }
       ],
       success_url: `${clientUrl}/booking/success?session_id={CHECKOUT_SESSION_ID}&type=private_venue`,
-      cancel_url: `${clientUrl}/booking/cancel`,
+      cancel_url: `${clientUrl}/booking/cancel?session_id={CHECKOUT_SESSION_ID}&type=private_venue`,
       metadata: {
         venueBookingId: booking._id.toString(),
         userId: req.user._id.toString(),
@@ -205,6 +205,47 @@ exports.verifyPaymentSession = async (req, res) => {
     res.status(400).json({ message: 'Invalid booking type' });
   } catch (error) {
     console.error('Payment verification error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Cancel a Stripe-linked booking when user cancels at checkout
+// @route   POST /api/payments/cancel-session
+// @access  Private
+exports.cancelPaymentSession = async (req, res) => {
+  const { sessionId, bookingType } = req.body;
+  try {
+    if (!sessionId) return res.status(400).json({ message: 'sessionId is required' });
+
+    if (bookingType === 'standard_table') {
+      const reservation = await Reservation.findOne({ stripeSessionId: sessionId });
+      if (!reservation) return res.status(404).json({ message: 'Reservation not found' });
+      if (reservation.user.toString() !== req.user._id.toString()) return res.status(403).json({ message: 'Not authorized' });
+
+      reservation.status = 'Cancelled';
+      reservation.paymentStatus = 'failed';
+      reservation.stripeSessionId = '';
+      await reservation.save();
+
+      return res.json({ message: 'Reservation cancelled', reservation });
+    }
+
+    if (bookingType === 'private_venue') {
+      const booking = await PrivateBooking.findOne({ stripeSessionId: sessionId });
+      if (!booking) return res.status(404).json({ message: 'Venue booking not found' });
+      if (booking.user.toString() !== req.user._id.toString()) return res.status(403).json({ message: 'Not authorized' });
+
+      booking.status = 'Cancelled';
+      booking.paymentStatus = 'failed';
+      booking.stripeSessionId = '';
+      await booking.save();
+
+      return res.json({ message: 'Venue booking cancelled', booking });
+    }
+
+    res.status(400).json({ message: 'Invalid booking type' });
+  } catch (error) {
+    console.error('Cancel payment session error:', error);
     res.status(500).json({ message: error.message });
   }
 };

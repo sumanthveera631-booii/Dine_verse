@@ -136,6 +136,34 @@ export const useBookingStore = create((set, get) => ({
     }
   },
 
+  cancelPaymentSession: async (sessionId, bookingType) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await axios.post(`${PAYMENT_API_URL}/cancel-session`, {
+        sessionId,
+        bookingType,
+      });
+
+      if (bookingType === 'standard_table') {
+        set((state) => ({
+          reservations: state.reservations.filter((r) => r.stripeSessionId !== sessionId),
+          loading: false,
+        }));
+      } else if (bookingType === 'private_venue') {
+        set((state) => ({
+          privateBookings: state.privateBookings.filter((b) => b.stripeSessionId !== sessionId),
+          loading: false,
+        }));
+      }
+
+      return response.data;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to cancel booking';
+      set({ error: errorMsg, loading: false });
+      throw new Error(errorMsg);
+    }
+  },
+
   // Get booking fee
   getBookingFee: async (tierType = 'CASUAL_DINING') => {
     try {
