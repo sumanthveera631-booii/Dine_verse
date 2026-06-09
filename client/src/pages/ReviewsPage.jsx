@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
+import API_BASE_URL from '../config/apiConfig';
 import GlassButton from '../components/GlassButton';
 import { Star, MessageSquare, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -20,7 +21,7 @@ export const ReviewsPage = () => {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/reviews');
+      const response = await axios.get(`${API_BASE_URL}/reviews`);
       setReviews(response.data);
     } catch (err) {
       console.error('Error fetching reviews:', err);
@@ -41,7 +42,7 @@ export const ReviewsPage = () => {
     }
     setFormError(null);
     try {
-      const response = await axios.post('/api/reviews', {
+      const response = await axios.post(`${API_BASE_URL}/reviews`, {
         comments,
         ratingValue: Number(ratingValue)
       });

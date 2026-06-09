@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBookingStore } from '../store/bookingStore';
 import { useAuthStore } from '../store/authStore';
+import API_BASE_URL from '../config/apiConfig';
 import PrivateRoomCard from '../components/PrivateRoomCard';
 import GlassButton from '../components/GlassButton';
 import { X, Calendar, Clock, Phone, FileText, CheckCircle2, Star, ShieldAlert } from 'lucide-react';
@@ -96,7 +97,7 @@ export const PrivateDiningPage = () => {
     const fetchRooms = async () => {
       setRoomsLoading(true);
       try {
-        const res = await axios.get('/api/venues');
+        const res = await axios.get(`${API_BASE_URL}/venues`);
         if (Array.isArray(res.data) && res.data.length > 0) {
           setPrivateRooms(res.data);
         } else {

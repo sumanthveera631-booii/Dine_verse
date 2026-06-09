@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-const API_URL = '/api/menu';
+const BASE_API_URL = process.env.REACT_APP_API_URL || 'https://dineverse-2kkb.onrender.com/api';
+const API_URL = `${BASE_API_URL}/menu`;
 
 export const useMenuStore = create((set, get) => ({
   menuItems: [],

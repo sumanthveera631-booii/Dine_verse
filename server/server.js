@@ -8,6 +8,9 @@ const connectDB = require('./config/db');
 // Error Middleware
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
+// Auto-seed utility
+const autoSeedDB = require('./utils/seedDB');
+
 // Route files
 const authRoutes = require('./routes/authRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
@@ -15,6 +18,7 @@ const menuRoutes = require('./routes/menuRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const venueRoutes = require('./routes/venueRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const seedRoutes = require('./routes/seedRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -26,8 +30,20 @@ const app = express();
 const server = http.createServer(app);
 
 // Configure CORS
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://dineverse-phi.vercel.app',
+];
+
 app.use(cors({
-  origin: '*', // Permit all origins in testing
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
+  },
   credentials: true,
 }));
 
@@ -62,6 +78,7 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/venues', venueRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/seed', seedRoutes);
 
 // Test endpoint
 app.get('/api/health', (req, res) => {
@@ -74,6 +91,9 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`🚀 DineVerse Luxury Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  
+  // Auto-seed database on first startup
+  await autoSeedDB();
 });

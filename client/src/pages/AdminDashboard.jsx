@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useMenuStore } from '../store/menuStore';
 import { useBookingStore } from '../store/bookingStore';
+import API_BASE_URL from '../config/apiConfig';
 import GlassButton from '../components/GlassButton';
 import axios from 'axios';
 import io from 'socket.io-client';
@@ -107,7 +108,7 @@ export const AdminDashboard = () => {
 
   const fetchReviewsForModeration = async () => {
     try {
-      const response = await axios.get('/api/reviews/all');
+      const response = await axios.get(`${API_BASE_URL}/reviews/all`);
       setReviewsList(response.data);
     } catch (err) {
       console.error('Error fetching all reviews:', err);
@@ -116,7 +117,7 @@ export const AdminDashboard = () => {
 
   const handleReviewAction = async (id, status) => {
     try {
-      await axios.patch(`/api/reviews/${id}/status`, { status });
+      await axios.patch(`${API_BASE_URL}/reviews/${id}/status`, { status });
       fetchReviewsForModeration();
     } catch (err) {
       console.error('Error updating review status:', err);
@@ -174,7 +175,7 @@ export const AdminDashboard = () => {
   // Venues CRUD
   const fetchVenues = async () => {
     try {
-      const res = await axios.get('/api/venues');
+      const res = await axios.get(`${API_BASE_URL}/venues`);
       setVenues(res.data || []);
     } catch (err) {
       console.error('Error fetching venues:', err);
@@ -199,9 +200,9 @@ export const AdminDashboard = () => {
       };
 
       if (venueEditing) {
-        await axios.put(`/api/venues/${venueEditing._id}`, payload);
+        await axios.put(`${API_BASE_URL}/venues/${venueEditing._id}`, payload);
       } else {
-        await axios.post('/api/venues', payload);
+        await axios.post(`${API_BASE_URL}/venues`, payload);
       }
 
       // Refresh and clear
@@ -234,7 +235,7 @@ export const AdminDashboard = () => {
   const handleDeleteVenue = async (id) => {
     if (!confirm('This will permanently remove the venue. Continue?')) return;
     try {
-      await axios.delete(`/api/venues/${id}`);
+      await axios.delete(`${API_BASE_URL}/venues/${id}`);
       await fetchVenues();
     } catch (err) {
       console.error('Error deleting venue:', err);
