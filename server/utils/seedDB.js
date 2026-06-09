@@ -1,5 +1,5 @@
 const MenuItem = require('../models/MenuItem');
-const PrivateBooking = require('../models/PrivateBooking');
+const PrivateRoom = require('../models/PrivateRoom');
 
 const menuItemsData = [
   {
@@ -192,7 +192,7 @@ const privateVenuesData = [
 const autoSeedDB = async () => {
   try {
     const menuCount = await MenuItem.countDocuments();
-    const venueCount = await PrivateBooking.countDocuments();
+    const venueCount = await PrivateRoom.countDocuments();
 
     // Only seed if collections are empty
     if (menuCount === 0 && venueCount === 0) {
@@ -201,7 +201,7 @@ const autoSeedDB = async () => {
       await MenuItem.insertMany(menuItemsData);
       console.log(`✅ Seeded ${menuItemsData.length} menu items`);
 
-      await PrivateBooking.insertMany(privateVenuesData);
+      await PrivateRoom.insertMany(privateVenuesData);
       console.log(`✅ Seeded ${privateVenuesData.length} private venues`);
 
       console.log('🎉 Database auto-seeding completed successfully!');

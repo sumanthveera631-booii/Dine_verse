@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const MenuItem = require('../models/MenuItem');
-const PrivateBooking = require('../models/PrivateBooking');
+const PrivateRoom = require('../models/PrivateRoom');
 
 // Seed data
 const menuItemsData = [
@@ -198,7 +198,7 @@ const privateVenuesData = [
 router.post('/', async (req, res) => {
   try {
     const menuCount = await MenuItem.countDocuments();
-    const venueCount = await PrivateBooking.countDocuments();
+    const venueCount = await PrivateRoom.countDocuments();
 
     if (menuCount > 0 || venueCount > 0) {
       return res.status(400).json({ 
@@ -211,7 +211,7 @@ router.post('/', async (req, res) => {
     console.log(`✅ Seeded ${insertedMenu.length} menu items`);
 
     // Seed private venues
-    const insertedVenues = await PrivateBooking.insertMany(privateVenuesData);
+    const insertedVenues = await PrivateRoom.insertMany(privateVenuesData);
     console.log(`✅ Seeded ${insertedVenues.length} private venues`);
 
     res.json({
