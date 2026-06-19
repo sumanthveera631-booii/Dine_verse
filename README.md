@@ -1,6 +1,6 @@
-# [Insert Project Name]
+#DineVerse
 
-> [Insert Name] is a polished full-stack application designed to solve [What does it do and why did you build it?] by delivering a secure, user-friendly reservation and payment experience.
+> DineVerse is a polished full-stack application designed to bridge the gap between luxury fine dining venues and seamless digital orchestrationby delivering a secure, user-friendly reservation and payment experience.
 
 ---
 
